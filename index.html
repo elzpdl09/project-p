@@ -601,7 +601,13 @@ async function savePost() {
     const submitBtn = document.getElementById('savePostBtn'); // 등록 버튼의 ID (HTML 확인 필요)
     const titleInput = document.getElementById('postTitle');
     const tagRaw = document.getElementById('postTags').value.trim();
-    const link = document.getElementById('postLink').value.trim();
+    // savePost 함수 내부의 link 가져오는 부분 수정
+let link = document.getElementById('postLink').value.trim();
+
+// [추가] 링크 주소 보정: 주소가 있다면 반드시 http:// 또는 https:// 가 붙게 함
+if (link && !link.startsWith('http')) {
+    link = 'https://' + link;
+}
     const content = document.getElementById('postContent').value.trim();
     const source = document.getElementById('postSource') ? document.getElementById('postSource').value.trim() : "";
 

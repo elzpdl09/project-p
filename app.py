@@ -137,6 +137,7 @@ def create_post():
             "title": title,
             "content": content,
             "image_url": image_url, 
+            "link": link,  # ← 이 줄이 반드시 추가되어야 합니다!
             "author_nickname": author_nickname,
             "source": source,
             "author_uuid": user_uuid if (user_uuid and user_uuid != "null") else None,
