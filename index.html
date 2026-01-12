@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GBS 서브컬처 아카이브</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.min.js"></script>
+  <style>
+    /* [설정] 배경색 및 기본 폰트 */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
+      min-height: 100vh; 
+      background-color: #f0f9ff; /* 연한 하늘색 배경 */
+      color: #1e293b;
+    }
+    
+    /* [설정] 헤더 및 검색창 */
+    header { 
+      position: sticky; top: 0; z-index: 40; 
+      background: rgba(255, 255, 255, 0.9); 
+      backdrop-filter: blur(16px); 
+      border-bottom: 1px solid #e2e8f0; 
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03); 
+    }
+    .header-container { 
+      max-width: 1152px; margin: 0 auto; padding: 1.25rem 1rem; 
+      display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; 
+    }
+    .user-status {
+      position: absolute;
+      top: 0.5rem;           /* 위쪽 여백을 줄여서 칸이 더 높게 배치되도록 함 */
+      right: 0.5rem;         /* 오른쪽 끝에 더 바짝 붙임 */
+      
+      /* 글씨 크기 극대화 */
+      font-size: 1.8rem;     /* 기존 1.3rem -> 1.6rem (매우 큼) */
+      color: #000000;
+      font-weight: 900;      /* 가장 두꺼운 폰트 두께 */
+      
+      background: #ffffff;
+      /* 상하 1.2rem, 좌우 2.5rem으로 압도적인 크기 확보 */
+      padding: 1.2rem 2.5rem;    
+      border-radius: 1.2rem; 
+      
+      /* 테두리를 4px로 늘려 매우 뚜렷하게 강조 */
+      border: 1.5px solid #000000; 
+      /* 그림자를 더 진하게 하여 튀어나온 느낌 부여 */
+      box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1); 
+      
+      display: flex;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .nickname-text {
+      color: #2563eb;
+      margin-right: 0.5rem;
+    }
+    .header-content { display: flex; align-items: center; gap: 0.75rem; }
+    
+    
+    .logo { 
+      width: 40px; height: 40px; 
+      background: linear-gradient(to bottom right, #3b82f6, #0ea5e9); 
+      border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); 
+    }
+    h1 { 
+      font-size: 1.875rem; font-weight: bold; 
+      background: linear-gradient(to right, #2563eb, #0284c7); 
+      -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; 
+    }
+
+    .search-box { width: 100%; display: flex; align-items: center; gap: 0.75rem; }
+    .search-input-wrapper { position: relative; flex: 1; display: flex; align-items: center; }
+    .search-icon { position: absolute; left: 14px; color: #94a3b8; pointer-events: none; z-index: 10; }
+    
+    .form-input {
+      width: 100%; padding: 0.75rem 1rem; padding-left: 3rem; /* 돋보기와 글자 겹침 방지 */
+      border: 1px solid #e2e8f0; border-radius: 0.75rem; 
+      outline: none; background: #f8fafc; transition: all 0.2s;
+      padding: 0.85rem 1rem 0.85rem 3rem; /* 상하 여백을 살짝 늘림 */
+      font-size: 1rem;                    /* 글자 크기를 1rem으로 고정 */
+    }
+    .form-input:focus { border-color: #3b82f6; background: #ffffff; }
+
+    /* [설정] 포스트 그리드 및 카드 */
+    main { max-width: 1152px; margin: 0 auto; padding: 2rem 1rem; }
+    .posts-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+    @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .posts-grid { grid-template-columns: repeat(3, 1fr); } }
+
+    .post-card { 
+      background: white; border-radius: 1rem; overflow: hidden; 
+      border: 1px solid #f1f5f9; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02); 
+      transition: all 0.3s ease; cursor: pointer; 
+    }
+    .post-card:hover { transform: translateY(-4px); border-color: #bfdbfe; }
+    .post-image-container { 
+  position: relative; 
+  height: 400px; /* 기존 220px에서 320px로 확대 */
+  background: #f8fafc; 
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* 컨테이너 안의 실제 이미지 스타일 추가 */
+.post-image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* 이미지가 비율을 유지하며 영역을 꽉 채우도록 함 */
+  display: block;
+}
+    .no-image { 
+      width: 100%; height: 100%; 
+      background: linear-gradient(135deg, #eff6ff, #dbeafe); 
+      display: flex; align-items: center; justify-content: center; 
+      color: #3b82f6; font-weight: 700; 
+    }
+    .post-badge { 
+      position: absolute; top: 0.75rem; right: 0.75rem; 
+      padding: 0.25rem 0.75rem; background: rgba(255, 255, 255, 0.9); 
+      border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: #2563eb; 
+    }
+    .post-content { padding: 1.25rem; }
+    .post-title { font-size: 1.125rem; font-weight: bold; color: #0f172a; margin-bottom: 0.5rem; }
+    .post-text { font-size: 0.875rem; color: #475569; line-height: 1.5; }
+    .post-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; }
+    .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 4px; background: #3b82f6; }
+
+    .fab {
+      position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
+      width: 64px; height: 64px;
+      background: linear-gradient(to bottom right, #3b82f6, #06b6d4);
+      border: none; border-radius: 50%; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
+      display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50;
+    }
+
+    /* [추가] 인증 모달 스타일 */
+    .auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(240, 249, 255, 0.95);
+      backdrop-filter: blur(8px);
+      z-index: 100; display: flex;
+      align-items: center; justify-content: center;
+    }
+  .auth-modal {
+  background: white;
+  padding: 4rem 3rem !important; 
+  border-radius: 3rem;
+  width: 90%;
+  max-width: 480px; /* 너무 넓어지지 않게 고정 */
+  display: flex !important;
+  flex-direction: column !important; /* 무조건 세로로 쌓이게 함 */
+  align-items: center !important; 
+  text-align: center;
+  box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.2);
+}
+
+/* 폼 영역이 가로를 꽉 채우도록 설정 */
+.auth-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 입력창이 밀리지 않도록 패딩과 너비 조정 */
+.auth-form input {
+  width: 100% !important;
+  margin-bottom: 1.5rem !important;
+  height: 55px !important;
+  padding: 0 1.5rem !important; /* 좌우 여백만 줌 */
+  font-size: 1.1rem;
+}
+
+/* 로고 박스 내부 SVG 정렬 강제 */
+.logo svg {
+  display: block;
+  flex-shrink: 0;
+}
+
+.auth-footer { 
+  margin-top: 3rem;          /* 폼 하단과 버튼/링크 사이 간격 확대 */
+  font-size: 1rem;           /* 글자 크기 확대 */
+  color: #3b82f6; 
+  cursor: pointer; 
+}
+
+.auth-footer .divider { color: #e2e8f0; margin: 0 1rem; cursor: default; }
+.auth-footer span:hover { text-decoration: underline; }
+
+.submit-btn {
+  width: 100%; 
+  height: 65px;              /* 버튼 세로 높이 대폭 확대 */
+  padding: 0;                /* 높이를 고정했으므로 패딩 초기화 */
+  background: #3b82f6; 
+  color: white;
+  border: none; 
+  border-radius: 1rem;       /* 둥근 정도 조절 */
+  font-size: 1.3rem;         /* 버튼 글자 크게 */
+  font-weight: bold; 
+  cursor: pointer; 
+  transition: all 0.2s;
+  margin-top: 1.5rem;        /* 버튼 위쪽 여백 */
+}
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+
+.close-btn:hover {
+  background-color: #f1f5f9; /* 마우스 올렸을 때 회색 배경 */
+}
+.submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+.hidden { display: none!important; }
+/* ↓↓↓ 스타일 태그 맨 아래에 [추가] 하세요 ↓↓↓ */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+    .modal { background: white; border-radius: 1.5rem; max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); }
+    .modal-header { position: sticky; top: 0; background: white; padding: 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
+    .modal-body { padding: 2rem; }
+    
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { display: block; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
+    .form-textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; transition: 0.2s; font-family: inherit; resize: none; }
+    .form-textarea:focus { border-color: #3b82f6; }
+
+    .upload-area { border: 2px dashed #e2e8f0; border-radius: 1rem; padding: 2.5rem; text-align: center; cursor: pointer; transition: 0.2s; background: #f8fafc; }
+    .upload-area:hover { border-color: #3b82f6; background: #eff6ff; }
+    
+    .close-btn { border: none; background: none; cursor: pointer; color: #64748b; }
+
+    /* [추가] 상세 모달 및 태그 디자인 */
+/* 상세 모달 크기 대폭 확대 및 가로 배치 */
+.detail-modal {
+  max-width: 1200px; /* 가로로 넓게 */
+  width: 95%;
+  height: 70vh; /* 높이 고정 */
+  display: flex; /* 가로 배치 */
+  flex-direction: row;
+  padding: 0; /* 내부 여백 제거 */
+  overflow: hidden;
+}
+
+/* 왼쪽 이미지 칸 */
+.detail-left {
+  flex: 1.2; /* 이미지를 조금 더 넓게 */
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-right: 1px solid #f1f5f9;
+}
+.detail-left img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* 이미지 전체가 보이도록 */
+}
+
+/* 오른쪽 정보 및 댓글 칸 */
+.detail-right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 1.5rem;
+}
+
+/* 댓글 영역 스크롤 설정 */
+.comment-section {
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 1rem;
+}
+.comment-item {
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+.comment-author { font-weight: bold; margin-right: 5px; }
+
+/* 댓글 입력창 */
+.comment-input-area {
+  display: flex;
+  gap: 8px;
+  margin-top: 1rem;
+}
+
+.tag-chip {
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  border: 1px solid rgba(0,0,0,0.05);
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+}
+/* 모바일 대응: 화면이 좁아지면 세로로 쌓기 */
+@media (max-width: 768px) {
+  .detail-modal {
+    flex-direction: column;
+    height: 95vh;
+  }
+  .detail-left {
+    flex: 0.8;
+    border-right: none;
+    border-bottom: 1px solid #f1f5f9;
+  }
+}
+#linkActionBtn {
+  transition: all 0.2s ease;
+}
+
+#linkActionBtn:hover {
+  background: #f1f5f9 !important;
+  transform: scale(1.1);
+}
+  </style>
+</head>
+<body>
+  <div class="modal-overlay hidden" id="postModalOverlay">
+      <div class="modal">
+        <div class="modal-header">
+          <h2 class="modal-title">새 작품 등록</h2>
+        <button class="close-btn" id="closePostBtn">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+</button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">제목 (필수)</label>
+            <input type="text" class="form-input" id="postTitle" placeholder="작품의 제목을 입력하세요">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">작품 이미지</label>
+            <div class="upload-area" id="uploadArea">
+  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+  <p id="uploadText">사진을 업로드하려면 클릭하세요</p>
+</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">카테고리 태그</label>
+            <input type="text" class="form-input" id="postTags" placeholder="예: #소설 #일러스트 #음악 (회색)">
+          </div>
+
+          <div class="form-group">
+  <label class="form-label">작가 / 출처</label>
+  <input type="text" class="form-input" id="postSource" placeholder="작가명 혹은 원본 출처를 입력하세요">
+</div>
+
+          <div class="form-group">
+            <label class="form-label">참조 링크 (URL)</label>
+            <input type="text" class="form-input" id="postLink" placeholder="유튜브, 개인 포트폴리오 등의 링크">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">상세 설명</label>
+            <textarea class="form-textarea" id="postContent" rows="5" placeholder="작품에 대한 설명을 적어주세요 (선택)"></textarea>
+          </div>
+
+          <button class="submit-btn" id="savePostBtn">등록하기</button>
+        </div>
+      </div>
+    </div>
+  <div id="authOverlay" class="auth-overlay">
+    <div class="auth-modal">
+      <div class="auth-header">
+  <div class="logo" style="margin: 0 auto 1.5rem; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; background: #3b82f6; border-radius: 16px; flex-shrink: 0;">
+    <svg width="35" height="35" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </div>
+  <h2 style="font-size: 2rem; margin-bottom: 1rem; color: #1e293b;">GBS 아카이브 시작하기</h2>
+  <p style="font-size: 1.1rem; color: #64748b; margin-bottom: 3rem;">서비스 이용을 위해 로그인이 필요합니다.</p>
+</div>
+
+      <div id="loginForm" class="auth-form">
+        <input type="text" id="loginId" class="form-input" placeholder="아이디" style="margin-bottom: 0.75rem; padding-left: 1rem;">
+        <input type="password" id="loginPw" class="form-input" placeholder="비밀번호" style="margin-bottom: 1.25rem; padding-left: 1rem;">
+        <button class="submit-btn" style="margin-bottom: 1rem;" onclick="handleLogin()">로그인</button>
+        <div class="auth-footer">
+          <span onclick="toggleAuthMode('signup')">회원가입</span>
+          <span class="divider">|</span>
+          <span onclick="handleGuestLogin()">게스트로 입장</span>
+        </div>
+      </div>
+
+      <div id="signupForm" class="auth-form hidden">
+        <input type="text" id="signupId" class="form-input" placeholder="새 아이디" style="margin-bottom: 0.75rem; padding-left: 1rem;">
+        <input type="password" id="signupPw" class="form-input" placeholder="새 비밀번호" style="margin-bottom: 0.75rem; padding-left: 1rem;">
+        <input type="text" id="signupNick" class="form-input" placeholder="닉네임" style="margin-bottom: 1.25rem; padding-left: 1rem;">
+        <button class="submit-btn" style="margin-bottom: 1rem; background: #0ea5e9;" onclick="handleSignup()">가입하기</button>
+        <div class="auth-footer">
+          <span onclick="toggleAuthMode('login')">이미 계정이 있나요? 로그인</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <div class="header-container">
+      <div id="userStatus" class="user-status hidden">
+          <span id="userNickname" class="nickname-text"></span>님
+        </div>
+      <div class="header-content">
+        <div class="logo">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+  </svg>
+</div>
+        <h1>GBS 서브컬처 아카이브</h1>
+      </div>
+      <div class="search-box">
+        <div class="search-input-wrapper">
+          <i data-lucide="search" class="search-icon"></i>
+          <input type="text"id="searchInput"class="form-input" placeholder="태그, 제목, 작성자로 검색">
+        </div>
+        <select id="categoryFilter" class="form-input" style="width: auto; padding-left: 1rem; margin-left: 0.5rem; cursor: pointer;">
+    <option value="all">전체 카테고리</option>
+    <option value="소설">#소설</option>
+    <option value="일러스트">#일러스트</option>
+    <option value="음악">#음악</option>
+    <option value="영상">#영상</option>
+    <option value="기타">#기타</option>
+  </select>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="posts-grid" id="posts-grid">
+    </div>
+  </main>
+
+  <button class="fab">
+  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="12" y1="5" x2="12" y2="19"></line>
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+  </svg>
+</button>
+<div class="modal-overlay hidden" id="detailOverlay">
+  <div class="detail-modal">
+    <div class="detail-left" id="detailImageWrapper"></div>
+
+    <div class="detail-right">
+      <div class="detail-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; gap: 15px;">
+        <h2 id="detailTitle" style="font-weight: 800; font-size: 1.5rem; color: #1e293b; margin: 0; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></h2>
+        
+        <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+          <button id="deletePostBtn" title="삭제하기" class="hidden" style="border: none; background: none; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; transition: all 0.2s; padding: 0; flex-shrink: 0;">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="3 6 5 6 21 6"></polyline>
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+    <line x1="10" y1="11" x2="10" y2="17"></line>
+    <line x1="14" y1="11" x2="14" y2="17"></line>
+  </svg>
+</button>
+         <button id="downloadBtn" title="이미지 다운로드" style="border: none; background: none; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: #1e293b; transition: all 0.2s; padding: 0; flex-shrink: 0;">
+  <svg id="downloadIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display: block; overflow: visible;">
+    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+    <polyline points="7 10 12 15 17 10"></polyline>
+    <line x1="12" y1="15" x2="12" y2="3"></line>
+  </svg>
+</button>
+          
+          <div id="likeContainer" style="display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; background: #fff1f2; padding: 4px 10px; border-radius: 20px; border: 1px solid #fecaca; transition: all 0.2s;">
+            <span id="detailLikeCount" style="font-weight: 800; color: #ef4444; font-size: 1rem;">0</span>
+            <button id="likeBtn" style="border: none; background: none; cursor: pointer; padding: 0; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; color: #ef4444;">
+              <svg id="heartIcon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path>
+              </svg>
+            </button>
+          </div>
+
+          <button id="linkActionBtn" title="링크 이동" style="border: 2px solid #1e293b; background: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e293b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+
+          <button id="detailCloseBtn" style="border:none; background:#f1f5f9; cursor:pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.2s;">
+            <svg width="20" height="20" fill="none" stroke="#64748b" stroke-width="2.5">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="detailTagWrapper" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 0.8rem;"></div>
+      <div id="detailSource" style="font-size: 1rem; color: #334155; margin-bottom: 1rem; font-style: italic; font-weight: 700; border-left: 4px solid #3b82f6; padding-left: 10px;"></div>
+      <div id="detailContent" style="font-size: 1rem; color: #475569; line-height: 1.6; white-space: pre-wrap; margin-bottom: 1.5rem; flex: 1; max-height: 200px; overflow-y: auto; padding-right: 5px;"></div>
+
+      <div style="display: flex; flex-direction: column; border-top: 1px solid #f1f5f9; padding-top: 1rem; height: 250px;">
+        <h3 style="font-size: 1rem; font-weight: 700; margin-bottom: 0.8rem; color: #1e293b;">댓글</h3>
+        <div id="commentList" style="flex: 1; overflow-y: auto; margin-bottom: 1rem; font-size: 0.9rem; color: #334155; padding-right: 5px;"></div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <input type="text" id="commentInput" placeholder="댓글을 입력하세요..." style="flex: 1; padding: 0.7rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; font-size: 0.9rem;">
+          <button id="submitCommentBtn" onclick="addComment()" style="background: #1e293b; color: white; border: none; padding: 0.7rem 1.2rem; border-radius: 0.75rem; font-weight: 600; cursor: pointer; white-space: nowrap;">등록</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ <script>
+    // [설정] 초기화 및 연결 확인
+    const API_BASE_URL = 'http://127.0.0.1:5000';
+    let currentUserNickname = "";
+let currentUserUuid = null; // SQL의 author_uuid에 대응하는 값
+window.selectedPostFile = null;
+
+
+    // 페이지 로드 시 단 한 번만 실행되는 초기화 함수
+    document.addEventListener('DOMContentLoaded', () => {
+        // 모든 아이콘(헤더, 로그인창 등)을 즉시 그립니다.
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+        checkServerConnection();
+    });
+
+    async function checkServerConnection() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/test-connection`);
+            const data = await response.json();
+            console.log("✅ 서버 연결 성공:", data.message);
+        } catch (error) {
+            console.log("⚠️ 서버 연결 대기 중...");
+        }
+    }
+
+    // [기능] 인증 로직 (로그인/회원가입 전환)
+    function toggleAuthMode(mode) {
+        const loginForm = document.getElementById('loginForm');
+        const signupForm = document.getElementById('signupForm');
+        if (mode === 'signup') {
+            loginForm.classList.add('hidden');
+            signupForm.classList.remove('hidden');
+        } else {
+            signupForm.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+        }
+    }
+
+    // 게스트 로그인
+    function handleGuestLogin() {
+    alert('게스트 계정으로 입장합니다.');
+    currentUserNickname = "게스트";
+    currentUserUuid = null; // 게스트는 작성자 ID를 null로 보냄
+    
+    document.getElementById('userNickname').innerText = "게스트";
+    document.getElementById('userStatus').classList.remove('hidden');
+    document.getElementById('authOverlay').style.display = 'none';
+}
+
+    // 실제 로그인 처리
+    async function handleLogin() {
+    const id = document.getElementById('loginId').value;
+    const pw = document.getElementById('loginPw').value;
+
+    if(!id || !pw) return alert("아이디와 비밀번호를 입력해주세요.");
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: id, password: pw })
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert(`${result.nickname}님, 환영합니다!`);
+            
+            // 1. 서버로부터 받은 정보 저장
+            currentUserNickname = result.nickname;
+            currentUserUuid = result.user_uuid; // 백엔드에서 전달받은 ID(UUID)
+            
+            // 2. UI 업데이트
+            document.getElementById('userNickname').innerText = result.nickname;
+            document.getElementById('userStatus').classList.remove('hidden');
+            
+            // 3. 모달창 닫기
+            document.getElementById('authOverlay').style.display = 'none';
+        } else {
+            alert("로그인 실패: " + result.message);
+        }
+    } catch (error) {
+        alert("서버 연결 오류가 발생했습니다.");
+    }
+}
+
+    // 회원가입 처리
+    async function handleSignup() {
+        const id = document.getElementById('signupId').value;
+        const pw = document.getElementById('signupPw').value;
+        const nick = document.getElementById('signupNick').value;
+        if(!id || !pw || !nick) return alert("모든 항목을 입력해주세요.");
+
+        try {
+            const response = await fetch(`${API_BASE_URL}/api/signup`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: id, password: pw, nickname: nick })
+            });
+            const result = await response.json();
+            if (response.ok) {
+                alert("회원가입 성공! 로그인해주세요.");
+                toggleAuthMode('login');
+            } else {
+                alert("가입 실패: " + result.message);
+            }
+        } catch (error) {
+            alert("서버 연결 오류가 발생했습니다.");
+        }
+    }
+
+    // [등록 모달 제어 함수]
+    function openPostModal() {
+        const postModal = document.getElementById('postModalOverlay');
+        postModal.classList.remove('hidden');
+        // 숨겨져 있던 모달이 나타날 때 아이콘을 다시 그립니다.
+        if (window.lucide) {
+            lucide.createIcons();
+        }
+    }
+
+    function closePostModal() {
+        document.getElementById('postModalOverlay').classList.add('hidden');
+    }
+
+    // [이벤트 리스너 연결]
+    const fabBtn = document.querySelector('.fab');
+    const closePostBtn = document.getElementById('closePostBtn');
+    const postModalOverlay = document.getElementById('postModalOverlay');
+
+    // + 버튼 클릭 시
+    fabBtn.addEventListener('click', openPostModal);
+
+    // X 버튼 클릭 시
+    closePostBtn.addEventListener('click', closePostModal);
+
+    // 바깥 어두운 영역 클릭 시
+    postModalOverlay.addEventListener('click', (e) => {
+        if (e.target === postModalOverlay) closePostModal();
+    });
+
+    // 이미지 업로드 영역 클릭 시
+    document.getElementById('uploadArea').onclick = () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*';
+        input.onchange = (e) => {
+            if(e.target.files[0]) {
+                const fileName = e.target.files[0].name;
+                document.getElementById('uploadText').innerText = "선택된 파일: " + fileName;
+                window.selectedPostFile = e.target.files[0];
+            }
+        };
+        input.click();
+    };
+async function savePost() {
+    const title = document.getElementById('postTitle').value.trim();
+    const tagRaw = document.getElementById('postTags').value.trim();
+    const link = document.getElementById('postLink').value.trim();
+    const content = document.getElementById('postContent').value.trim();
+    
+    // [추가] 작가/출처 입력값 가져오기
+    const source = document.getElementById('postSource') ? document.getElementById('postSource').value.trim() : "";
+
+    // 제목 필수 체크
+    if (!title) {
+        return alert("제목은 필수 항목입니다.");
+    }
+
+    // #태그 추출 로직
+    const tags = tagRaw.split(' ')
+                        .filter(t => t.startsWith('#'))
+                        .map(t => t.replace('#', ''));
+
+    // FormData 생성 (이미지 및 출처 포함)
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('link', link);
+    formData.append('source', source); // [중요] 서버로 출처 데이터 전송
+    formData.append('tags', JSON.stringify(tags)); 
+    
+    if (currentUserUuid) {
+        formData.append('user_uuid', currentUserUuid);
+    }
+
+    if (window.selectedPostFile) {
+        formData.append('image', window.selectedPostFile);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/posts`, {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("작품이 성공적으로 등록되었습니다!");
+            closePostModal(); 
+            
+            // 입력 필드 초기화
+            document.getElementById('postTitle').value = '';
+            document.getElementById('postTags').value = '';
+            document.getElementById('postLink').value = '';
+            document.getElementById('postContent').value = '';
+            if(document.getElementById('postSource')) document.getElementById('postSource').value = '';
+            document.getElementById('uploadText').innerText = "사진을 업로드하려면 클릭하세요";
+            window.selectedPostFile = null;
+
+            fetchAndDisplayPosts(); 
+        } else {
+            alert("등록 실패: " + result.message);
+        }
+    } catch (error) {
+        alert("서버 연결 오류가 발생했습니다.");
+    }
+}
+
+
+// 1. 태그 색상 설정 (전역 변수)
+const pastelColors = ['#f0fdf4', '#fef2f2', '#fff7ed', '#f0f9ff', '#f5f3ff', '#faf5ff'];
+const pastelBorders = ['#bcf0da', '#fecaca', '#fed7aa', '#bae6fd', '#ddd6fe', '#e9d5ff'];
+
+// 2. 게시물 데이터를 담을 전역 배열
+let posts = []; 
+
+// 3. 게시물 로드 및 그리드 생성 함수
+async function fetchAndDisplayPosts() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/posts`);
+        // 1. 서버 데이터를 전역 변수에 먼저 저장
+        posts = await response.json(); 
+
+        // 2. 데이터가 posts에 담긴 후, 즉시 화면에 그리기 호출
+        renderPosts(); 
+    } catch (error) {
+        console.error("게시물 로드 중 오류:", error);
+        // 에러 시 사용자에게 알림 (선택 사항)
+        document.getElementById('posts-grid').innerHTML = "게시물을 불러오는 중 오류가 발생했습니다.";
+    }
+}
+function renderPosts() {
+    // 요소가 있는지 확인 (에러 방지)
+    const searchInput = document.getElementById('searchInput');
+    const categoryFilter = document.getElementById('categoryFilter');
+    const grid = document.getElementById('posts-grid');
+
+    if (!grid) return;
+
+    // 값이 없으면 빈 문자열('')과 'all'을 기본값으로 사용
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+    const selectedCategory = categoryFilter ? categoryFilter.value : 'all';
+    
+    // 필터링 로직 (기존과 동일)
+    const filteredPosts = posts.filter(post => {
+        const matchesKeyword = 
+            post.title.toLowerCase().includes(searchTerm) ||
+            (post.content && post.content.toLowerCase().includes(searchTerm)) ||
+            (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+        
+        const matchesCategory = 
+            selectedCategory === 'all' || 
+            (post.tags && post.tags.includes(selectedCategory));
+            
+        return matchesKeyword && matchesCategory;
+    });
+
+    grid.innerHTML = ''; 
+
+    // 필터링된 결과물 그리기 (사용자님의 기존 innerHTML 구조 그대로 사용)
+    filteredPosts.forEach(post => {
+        const mainBadge = post.tags && post.tags.length > 0 ? post.tags[0] : '작품';
+        const imageHtml = post.image_url 
+            ? `<img src="${post.image_url}" alt="${post.title}" style="width:100%; height:100%; object-fit:cover;">`
+            : `<div class="no-image">ILLUSTRATION</div>`;
+
+        const postCard = document.createElement('article');
+        postCard.className = 'post-card';
+        postCard.style.cursor = 'pointer'; 
+        
+        postCard.innerHTML = `
+            <div class="post-image-container">
+                ${imageHtml}
+                <span class="post-badge">${mainBadge}</span>
+            </div>
+            <div class="post-content">
+                <h3 class="post-title">${post.title}</h3>
+                <p class="post-text">${post.content || ''}</p>
+                <div class="flex flex-wrap gap-1 my-2">
+                    ${(post.tags || []).map(tag => `<span style="color:#3b82f6; font-size:0.75rem;">#${tag}</span>`).join(' ')}
+                </div>
+                <div class="post-meta">
+                    <span>좋아요 ${post.like_count || 0}</span>
+                    <span>작성자: ${post.author_nickname || '익명'}</span>
+                </div>
+            </div>
+        `;
+
+        postCard.onclick = () => openDetail(post.id);
+        grid.appendChild(postCard);
+    });
+}
+
+// 기존에 두 개로 나뉘어 있던 window.openDetail을 이 하나로 합치세요.
+window.openDetail = async (id) => {
+    const post = posts.find(p => p.id === id);
+    if (!post) return;
+    currentPostId = id;
+
+    // 1. 기본 정보 채우기
+    document.getElementById('detailTitle').innerText = post.title;
+    
+    // [출처 정보 표시 로직]
+    const sourceWrapper = document.getElementById('detailSource');
+    if (sourceWrapper) {
+        if (post.source) {
+            sourceWrapper.innerText = `출처: ${post.source}`;
+            sourceWrapper.style.display = 'block';
+        } else {
+            sourceWrapper.style.display = 'none';
+        }
+    }
+
+    document.getElementById('detailContent').innerText = post.content || "상세 설명이 없습니다.";
+    
+    // 이미지 처리
+    const imgWrapper = document.getElementById('detailImageWrapper');
+    imgWrapper.innerHTML = post.image_url 
+        ? `<img src="${post.image_url}" style="width:100%; height:100%; object-fit:contain;">`
+        : `<div style="padding:4rem; text-align:center; background:#f1f5f9; color:#94a3b8;">이미지가 없습니다</div>`;
+
+    // 2. 태그 채우기 (파스텔 디자인 유지)
+    const tagWrapper = document.getElementById('detailTagWrapper');
+    tagWrapper.innerHTML = '';
+    (post.tags || []).forEach((tag, idx) => {
+        const span = document.createElement('span');
+        span.className = 'tag-chip';
+        span.innerText = `#${tag}`;
+        span.style.backgroundColor = pastelColors[idx % pastelColors.length];
+        span.style.border = `1px solid ${pastelBorders[idx % pastelBorders.length]}`;
+        tagWrapper.appendChild(span);
+    });
+
+    // 3. 종이비행기 버튼 (링크 이동)
+    const linkBtn = document.getElementById('linkActionBtn');
+    linkBtn.onclick = (e) => {
+        e.stopPropagation();
+        if (post.link && post.link.trim() !== "") {
+            window.open(post.link, '_blank');
+        } else {
+            alert("연결된 참조 링크가 없습니다.");
+        }
+    };
+
+    // [추가] 다운로드 버튼 로직
+    const downloadBtn = document.getElementById('downloadBtn');
+    if (post.image_url) {
+        downloadBtn.style.display = 'flex';
+        downloadBtn.onclick = () => downloadImage(post.image_url, post.title);
+    } else {
+        downloadBtn.style.display = 'none'; // 이미지가 없으면 버튼 숨김
+    }
+
+    // [추가] 본인 확인 후 삭제 버튼 노출 여부 결정
+    const deleteBtn = document.getElementById('deletePostBtn');
+    if (currentUserUuid && post.author_uuid === currentUserUuid) {
+        deleteBtn.classList.remove('hidden');
+        deleteBtn.onclick = () => handleDeletePost(id);
+    } else {
+        deleteBtn.classList.add('hidden');
+    }
+
+    // [수정] 닫기 버튼 이벤트 연결 (함수 안에서 다시 한번 확실히 연결)
+    document.getElementById('detailCloseBtn').onclick = () => {
+        document.getElementById('detailOverlay').classList.add('hidden');
+    };
+
+    
+
+    // 4. 댓글 불러오기
+    fetchComments(id);
+
+    document.getElementById('detailOverlay').classList.remove('hidden');
+
+   // 좋아요 숫자 표시
+    document.getElementById('detailLikeCount').innerText = post.like_count || 0;
+    
+    // 하트 아이콘 초기화 (비워진 상태)
+    const heartIcon = document.getElementById('heartIcon');
+    heartIcon.setAttribute('fill', 'none');
+
+    // 좋아요 전체 컨테이너 클릭 시 작동
+    document.getElementById('likeContainer').onclick = () => handleLike(id);
+    
+};
+
+// 댓글 가져오기 함수
+async function fetchComments(postId) {
+    const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`); // 백엔드에 해당 엔드포인트 필요
+    const comments = await res.json();
+    const list = document.getElementById('commentList');
+    list.innerHTML = comments.map(c => `
+        <div class="comment-item">
+            <span class="comment-author">${c.author_nickname}</span>
+            <span class="comment-text">${c.content}</span>
+        </div>
+    `).join('');
+}
+
+// 댓글 등록 함수
+async function addComment() {
+    const input = document.getElementById('commentInput');
+    const content = input.value.trim();
+    if (!content) return;
+
+    const res = await fetch(`${API_BASE_URL}/api/posts/${currentPostId}/comments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: content, author_nickname: '익명' })
+    });
+
+    if (res.ok) {
+        input.value = '';
+        fetchComments(currentPostId); // 댓글 목록 갱신
+    }
+}
+
+async function handleLike(postId) {
+    if (!currentUserUuid) return alert("로그인 후 이용 가능합니다.");
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/posts/${postId}/like`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_uuid: currentUserUuid })
+        });
+        
+        const result = await response.json();
+
+        if (response.ok) {
+            const heartIcon = document.getElementById('heartIcon');
+            const likeCountText = document.getElementById('detailLikeCount');
+
+            // 1. 숫지 업데이트
+            likeCountText.innerText = result.like_count;
+
+            // handleLike 함수 내부 상태 업데이트 부분
+if (result.like_status === "liked") {
+    heartIcon.setAttribute('fill', '#ef4444');   // 하트 내부 채우기
+    heartIcon.style.color = '#ef4444';           // 테두리 색상 유지
+} else {
+    heartIcon.setAttribute('fill', 'none');      // 하트 비우기
+    heartIcon.style.color = '#ef4444';           // 테두리 색상 유지
+}
+
+            // 3. 메인 목록 데이터 갱신
+            const post = posts.find(p => p.id === postId);
+            if (post) post.like_count = result.like_count;
+            renderPosts();
+        }
+    } catch (error) {
+        console.error("좋아요 처리 중 오류:", error);
+    }
+}
+
+async function downloadImage(url, filename) {
+    try {
+        const response = await fetch(url);
+        const blob = await response.blob(); // 이미지 데이터를 바이너리로 변환
+        const blobUrl = window.URL.createObjectURL(blob);
+        
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        // 파일명 끝에 확장자를 붙여서 저장 (기본값 png)
+        link.download = `${filename || 'gbs_archive'}.png`; 
+        
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        
+        window.URL.revokeObjectURL(blobUrl); // 메모리 해제
+    } catch (error) {
+        console.error("다운로드 중 오류 발생:", error);
+        alert("이미지 다운로드에 실패했습니다.");
+    }
+}
+
+async function handleDeletePost(postId) {
+    if (!confirm("정말로 이 작품을 삭제하시겠습니까? 관련 댓글과 좋아요도 모두 사라집니다.")) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/posts/${postId}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_uuid: currentUserUuid })
+        });
+
+        if (response.ok) {
+            alert("게시물이 삭제되었습니다.");
+            document.getElementById('detailOverlay').classList.add('hidden');
+            fetchAndDisplayPosts(); // 목록 새로고침
+        } else {
+            const result = await response.json();
+            alert(result.message);
+        }
+    } catch (error) {
+        console.error("삭제 중 오류 발생:", error);
+    }
+}
+
+
+// [추가] 모달 바깥 배경 클릭 시 닫기
+document.getElementById('detailOverlay').onclick = (e) => {
+    if (e.target.id === 'detailOverlay') {
+        document.getElementById('detailOverlay').classList.add('hidden');
+    }
+};
+// 페이지 로드 시 실행되도록 리스너 등록
+document.addEventListener('DOMContentLoaded', fetchAndDisplayPosts);
+// 등록 버튼에 클릭 이벤트 연결 (이미 있는 버튼 ID: savePostBtn)
+document.getElementById('savePostBtn').addEventListener('click', savePost)
+// 검색창에 타이핑할 때마다 renderPosts 실행
+document.getElementById('searchInput').addEventListener('input', renderPosts);
+
+// 카테고리를 바꿀 때마다 renderPosts 실행
+document.getElementById('categoryFilter').addEventListener('change', renderPosts);
+// 페이지 로드 후 실행되도록 설정
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. 초기 게시물 가져오기
+    fetchAndDisplayPosts();
+
+    // 2. 루사이드 아이콘 그리기
+    if (window.lucide) lucide.createIcons();
+
+    // 3. 등록 모달 제어
+    const fabBtn = document.querySelector('.fab');
+    if (fabBtn) fabBtn.onclick = openPostModal;
+
+    const closePostBtn = document.getElementById('closePostBtn');
+    if (closePostBtn) closePostBtn.onclick = closePostModal;
+
+    // 4. 상세 모달 닫기 버튼 (중요!)
+    const detailCloseBtn = document.getElementById('detailCloseBtn');
+    if (detailCloseBtn) {
+        detailCloseBtn.onclick = () => {
+            document.getElementById('detailOverlay').classList.add('hidden');
+        };
+    }
+
+    // 5. 검색 및 필터 이벤트
+    document.getElementById('searchInput').addEventListener('input', renderPosts);
+    document.getElementById('categoryFilter').addEventListener('change', renderPosts);
+
+    // 6. 엔터키 이벤트 (로그인, 회원가입, 댓글)
+    const loginPwInput = document.getElementById('loginPw');
+    if (loginPwInput) {
+        loginPwInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleLogin(); });
+    }
+
+    const signupNickInput = document.getElementById('signupNick');
+    if (signupNickInput) {
+        signupNickInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleSignup(); });
+    }
+
+    const commentInput = document.getElementById('commentInput');
+    if (commentInput) {
+        commentInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') addComment(); });
+    }
+    
+    // 7. 게시물 등록 버튼
+    document.getElementById('savePostBtn').onclick = savePost;
+});
+</script>
+</body>
+</html>
