@@ -189,53 +189,37 @@
     }
 
     /* 모바일 상세 모달 대응 최적화 */
-    @media (max-width: 768px) {
-      /* 상세 설명 입력 칸(textarea) 모바일 최적화 */
-    /* 폼 그룹 내 요소들을 수직으로 강제 정렬 */
+   @media (max-width: 768px) {
+    /* 상세 설명이 포함된 폼 그룹 전체를 수직 정렬로 강제 전환 */
     .form-group {
-        display: flex;
-        flex-direction: column; /* 라벨이 위, 입력창이 아래로 오도록 강제 */
-        align-items: flex-start;
-        margin-bottom: 1.2rem;
+        display: block !important; /* flex 대신 block을 써서 위아래로 쌓이게 함 */
+        width: 100% !important;
+        margin-bottom: 1.5rem !important;
     }
 
-    /* 상세 설명 라벨 스타일 (글자) */
+    /* 상세 설명 글자 (라벨) */
     .form-label {
-        order: 1; /* 순서를 1번으로 고정 */
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 8px !important; /* 글자와 창 사이 간격 */
+        font-weight: 700 !important;
+        font-size: 0.95rem !important;
+        text-align: left !important;
     }
 
     /* 상세 설명 입력창 (textarea) */
     .form-textarea {
-        order: 2; /* 순서를 2번으로 고정하여 항상 라벨 아래에 위치 */
-        min-height: 150px; /* 높이를 적절히 확장 */
-        width: 100%;
-        font-size: 1rem;
-        padding: 0.8rem;
+        display: block !important;
+        width: 100% !important;
+        min-height: 180px !important; /* 높이를 충분히 확보 */
+        padding: 12px !important;
+        font-size: 1rem !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 0.75rem !important;
+        /* 아래로 더 늘어날 수 있게 함 */
+        resize: vertical !important; 
     }
-    .modal-body {
-        padding: 1.2rem 1.2rem 2.5rem 1.2rem; /* 하단 패딩을 늘려 등록 버튼까지 잘 보이게 함 */
-    }
-        .detail-modal { 
-            flex-direction: column; 
-            height: 92vh; 
-            overflow-y: auto; /* 모바일에서 화면을 내리며 댓글 확인 가능하도록 수정 */
-        }
-        .detail-left { 
-            flex: none; 
-            height: auto; 
-            min-height: 250px; 
-            border-right: none; 
-            border-bottom: 1px solid #f1f5f9; 
-        }
-        .detail-right { 
-            flex: none; 
-            overflow: visible; /* 부모 스크롤을 따라가도록 설정 */
-            padding-bottom: 2rem;
-        }
-    }
-
+}
     .fab {
         position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
         width: 52px; height: 52px;
