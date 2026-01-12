@@ -191,11 +191,28 @@
     /* 모바일 상세 모달 대응 최적화 */
     @media (max-width: 768px) {
       /* 상세 설명 입력 칸(textarea) 모바일 최적화 */
+    /* 폼 그룹 내 요소들을 수직으로 강제 정렬 */
+    .form-group {
+        display: flex;
+        flex-direction: column; /* 라벨이 위, 입력창이 아래로 오도록 강제 */
+        align-items: flex-start;
+        margin-bottom: 1.2rem;
+    }
+
+    /* 상세 설명 라벨 스타일 (글자) */
+    .form-label {
+        order: 1; /* 순서를 1번으로 고정 */
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    /* 상세 설명 입력창 (textarea) */
     .form-textarea {
-        min-height: 180px; /* (수정) 높이를 더 확장하여 여유 공간 확보 */
-        font-size: 1rem;   /* 모바일에서 입력 시 화면 확대 방지를 위해 1rem 유지 */
-        line-height: 1.6;
-        padding: 1rem;
+        order: 2; /* 순서를 2번으로 고정하여 항상 라벨 아래에 위치 */
+        min-height: 150px; /* 높이를 적절히 확장 */
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.8rem;
     }
     .modal-body {
         padding: 1.2rem 1.2rem 2.5rem 1.2rem; /* 하단 패딩을 늘려 등록 버튼까지 잘 보이게 함 */
