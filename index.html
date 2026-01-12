@@ -1027,6 +1027,26 @@ async function handleDeletePost(postId) {
     }
 }
 
+async function fetchAndDisplayPosts() {
+    const grid = document.getElementById('posts-grid');
+    // 로딩 메시지 표시
+    grid.innerHTML = `
+        <div id="loading-message" style="grid-column: 1/-1; text-align: center; padding: 3rem; color: #64748b;">
+            <div class="spinner" style="margin-bottom: 1rem;">⏳</div>
+            <p style="font-weight: 600;">서버가 깨어나는 중입니다...</p>
+            <p style="font-size: 0.85rem;">(Render 무료 플랜 특성상 첫 접속 시 최대 1분 정도 소요될 수 있습니다.)</p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/api/posts`);
+        posts = await response.json(); 
+        renderPosts(); 
+    } catch (error) {
+        console.error("게시물 로드 오류:", error);
+        grid.innerHTML = "<p style='text-align:center; grid-column:1/-1;'>데이터를 불러오지 못했습니다.</p>";
+    }
+}
 
 // [추가] 모달 바깥 배경 클릭 시 닫기
 document.getElementById('detailOverlay').onclick = (e) => {
