@@ -11,7 +11,7 @@
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; 
       min-height: 100vh; 
-      background-color: #f0f9ff; /* 연한 하늘색 배경 */
+      background-color: #f0f9ff; 
       color: #1e293b;
     }
     
@@ -24,29 +24,23 @@
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03); 
     }
     .header-container { 
-      max-width: 1152px; margin: 0 auto; padding: 1.25rem 1rem; 
+      max-width: 1152px; margin: 0 auto; padding: 1rem; 
       display: flex; flex-direction: column; align-items: flex-start; gap: 1rem; 
     }
+
+    /* [이름창] 크기 최적화 (기존 900 두께와 테두리는 유지하되 크기만 조정) */
     .user-status {
       position: absolute;
-      top: 0.5rem;           /* 위쪽 여백을 줄여서 칸이 더 높게 배치되도록 함 */
-      right: 0.5rem;         /* 오른쪽 끝에 더 바짝 붙임 */
-      
-      /* 글씨 크기 극대화 */
-      font-size: 1.8rem;     /* 기존 1.3rem -> 1.6rem (매우 큼) */
+      top: 0.5rem;
+      right: 0.5rem;
+      font-size: 1.1rem;      /* 기존 1.8rem에서 가독성 있게 조정 */
       color: #000000;
-      font-weight: 900;      /* 가장 두꺼운 폰트 두께 */
-      
+      font-weight: 900;
       background: #ffffff;
-      /* 상하 1.2rem, 좌우 2.5rem으로 압도적인 크기 확보 */
-      padding: 1.2rem 2.5rem;    
-      border-radius: 1.2rem; 
-      
-      /* 테두리를 4px로 늘려 매우 뚜렷하게 강조 */
-      border: 1.5px solid #000000; 
-      /* 그림자를 더 진하게 하여 튀어나온 느낌 부여 */
-      box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.1); 
-      
+      padding: 0.6rem 1.2rem; /* 여백 조정 */
+      border-radius: 0.8rem; 
+      border: 2px solid #000000; /* 두꺼운 선 유지 */
+      box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1); 
       display: flex;
       align-items: center;
       z-index: 10;
@@ -54,19 +48,19 @@
 
     .nickname-text {
       color: #2563eb;
-      margin-right: 0.5rem;
+      margin-right: 0.3rem;
     }
+
     .header-content { display: flex; align-items: center; gap: 0.75rem; }
     
-    
     .logo { 
-      width: 40px; height: 40px; 
+      width: 36px; height: 36px; 
       background: linear-gradient(to bottom right, #3b82f6, #0ea5e9); 
-      border-radius: 12px; display: flex; align-items: center; justify-content: center; 
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; 
       box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); 
     }
     h1 { 
-      font-size: 1.875rem; font-weight: bold; 
+      font-size: 1.5rem; font-weight: bold; /* 1.875rem에서 살짝 조정 */
       background: linear-gradient(to right, #2563eb, #0284c7); 
       -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; 
     }
@@ -76,19 +70,27 @@
     .search-icon { position: absolute; left: 14px; color: #94a3b8; pointer-events: none; z-index: 10; }
     
     .form-input {
-      width: 100%; padding: 0.75rem 1rem; padding-left: 3rem; /* 돋보기와 글자 겹침 방지 */
+      width: 100%; padding: 0.7rem 1rem 0.7rem 3rem; 
       border: 1px solid #e2e8f0; border-radius: 0.75rem; 
       outline: none; background: #f8fafc; transition: all 0.2s;
-      padding: 0.85rem 1rem 0.85rem 3rem; /* 상하 여백을 살짝 늘림 */
-      font-size: 1rem;                    /* 글자 크기를 1rem으로 고정 */
+      font-size: 1rem;
     }
     .form-input:focus { border-color: #3b82f6; background: #ffffff; }
 
-    /* [설정] 포스트 그리드 및 카드 */
-    main { max-width: 1152px; margin: 0 auto; padding: 2rem 1rem; }
-    .posts-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
-    @media (min-width: 768px) { .posts-grid { grid-template-columns: repeat(2, 1fr); } }
-    @media (min-width: 1024px) { .posts-grid { grid-template-columns: repeat(3, 1fr); } }
+    /* [설정] 포스트 그리드 및 카드 (모바일 최적화) */
+    main { max-width: 1152px; margin: 0 auto; padding: 1.5rem 1rem; }
+    
+    /* 모바일에서는 2열로 보여주어 화면 낭비를 줄임 */
+    .posts-grid { 
+        display: grid; 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 1rem; 
+    }
+    
+    /* 테블릿 이상에서 3열 */
+    @media (min-width: 768px) { 
+        .posts-grid { grid-template-columns: repeat(3, 1fr); gap: 1.5rem; } 
+    }
 
     .post-card { 
       background: white; border-radius: 1rem; overflow: hidden; 
@@ -96,234 +98,125 @@
       transition: all 0.3s ease; cursor: pointer; 
     }
     .post-card:hover { transform: translateY(-4px); border-color: #bfdbfe; }
+
     .post-image-container { 
-  position: relative; 
-  height: 400px; /* 기존 220px에서 320px로 확대 */
-  background: #f8fafc; 
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* 컨테이너 안의 실제 이미지 스타일 추가 */
-.post-image-container img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover; /* 이미지가 비율을 유지하며 영역을 꽉 채우도록 함 */
-  display: block;
-}
-    .no-image { 
-      width: 100%; height: 100%; 
-      background: linear-gradient(135deg, #eff6ff, #dbeafe); 
-      display: flex; align-items: center; justify-content: center; 
-      color: #3b82f6; font-weight: 700; 
+      position: relative; 
+      height: 200px; /* 고정 높이를 줄여 카드 전체 크기 조절 */
+      background: #f8fafc; 
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    @media (min-width: 768px) {
+        .post-image-container { height: 300px; } /* PC에서는 크게 유지 */
+    }
+
+    .post-image-container img {
+      width: 100%; height: 100%; object-fit: cover; display: block;
+    }
+
     .post-badge { 
-      position: absolute; top: 0.75rem; right: 0.75rem; 
-      padding: 0.25rem 0.75rem; background: rgba(255, 255, 255, 0.9); 
-      border-radius: 9999px; font-size: 0.75rem; font-weight: 600; color: #2563eb; 
+      position: absolute; top: 0.5rem; right: 0.5rem; 
+      padding: 0.2rem 0.6rem; background: rgba(255, 255, 255, 0.9); 
+      border-radius: 9999px; font-size: 0.7rem; font-weight: 600; color: #2563eb; 
     }
-    .post-content { padding: 1.25rem; }
-    .post-title { font-size: 1.125rem; font-weight: bold; color: #0f172a; margin-bottom: 0.5rem; }
-    .post-text { font-size: 0.875rem; color: #475569; line-height: 1.5; }
-    .post-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.75rem; color: #94a3b8; }
-    .color-dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; margin-right: 4px; background: #3b82f6; }
+    .post-content { padding: 1rem; }
+    .post-title { font-size: 1rem; font-weight: bold; color: #0f172a; margin-bottom: 0.4rem; }
+    .post-text { 
+        font-size: 0.85rem; color: #475569; line-height: 1.4; 
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; 
+    }
+    .post-meta { display: flex; align-items: center; justify-content: space-between; font-size: 0.7rem; color: #94a3b8; margin-top: 0.8rem; }
 
+    /* [설정] 플로팅 버튼 */
     .fab {
       position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%);
-      width: 64px; height: 64px;
+      width: 56px; height: 56px; /* 64px에서 약간 축소 */
       background: linear-gradient(to bottom right, #3b82f6, #06b6d4);
       border: none; border-radius: 50%; box-shadow: 0 10px 20px rgba(59, 130, 246, 0.4);
       display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 50;
     }
 
-    /* [추가] 인증 모달 스타일 */
+    /* [추가] 인증 모달 스타일 (로그인/회원가입) */
     .auth-overlay {
       position: fixed; inset: 0;
       background: rgba(240, 249, 255, 0.95);
       backdrop-filter: blur(8px);
       z-index: 100; display: flex;
-      align-items: center; justify-content: center;
+      align-items: center; justify-content: center; padding: 1rem;
     }
-  .auth-modal {
-  background: white;
-  padding: 4rem 3rem !important; 
-  border-radius: 3rem;
-  width: 90%;
-  max-width: 480px; /* 너무 넓어지지 않게 고정 */
-  display: flex !important;
-  flex-direction: column !important; /* 무조건 세로로 쌓이게 함 */
-  align-items: center !important; 
-  text-align: center;
-  box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.2);
-}
+    .auth-modal {
+      background: white;
+      padding: 2.5rem 2rem !important; 
+      border-radius: 2rem;
+      width: 100%;
+      max-width: 400px;
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important; 
+      text-align: center;
+      box-shadow: 0 30px 60px -12px rgba(59, 130, 246, 0.2);
+    }
+    .auth-form { width: 100%; display: flex; flex-direction: column; }
+    .auth-form input {
+      width: 100% !important; margin-bottom: 1rem !important;
+      height: 48px !important; padding: 0 1rem !important; font-size: 1rem;
+      border: 1px solid #e2e8f0; border-radius: 0.75rem;
+    }
+    .submit-btn {
+      width: 100%; height: 54px; 
+      background: #3b82f6; color: white; border: none; 
+      border-radius: 1rem; font-size: 1.1rem; font-weight: bold; 
+      cursor: pointer; transition: all 0.2s; margin-top: 1rem;
+    }
+    .auth-footer { margin-top: 1.5rem; font-size: 0.9rem; color: #3b82f6; cursor: pointer; }
+    .auth-footer .divider { color: #e2e8f0; margin: 0 0.5rem; }
 
-/* 폼 영역이 가로를 꽉 채우도록 설정 */
-.auth-form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-/* 입력창이 밀리지 않도록 패딩과 너비 조정 */
-.auth-form input {
-  width: 100% !important;
-  margin-bottom: 1.5rem !important;
-  height: 55px !important;
-  padding: 0 1.5rem !important; /* 좌우 여백만 줌 */
-  font-size: 1.1rem;
-}
-
-/* 로고 박스 내부 SVG 정렬 강제 */
-.logo svg {
-  display: block;
-  flex-shrink: 0;
-}
-
-.auth-footer { 
-  margin-top: 3rem;          /* 폼 하단과 버튼/링크 사이 간격 확대 */
-  font-size: 1rem;           /* 글자 크기 확대 */
-  color: #3b82f6; 
-  cursor: pointer; 
-}
-
-.auth-footer .divider { color: #e2e8f0; margin: 0 1rem; cursor: default; }
-.auth-footer span:hover { text-decoration: underline; }
-
-.submit-btn {
-  width: 100%; 
-  height: 65px;              /* 버튼 세로 높이 대폭 확대 */
-  padding: 0;                /* 높이를 고정했으므로 패딩 초기화 */
-  background: #3b82f6; 
-  color: white;
-  border: none; 
-  border-radius: 1rem;       /* 둥근 정도 조절 */
-  font-size: 1.3rem;         /* 버튼 글자 크게 */
-  font-weight: bold; 
-  cursor: pointer; 
-  transition: all 0.2s;
-  margin-top: 1.5rem;        /* 버튼 위쪽 여백 */
-}
-.close-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 5px;
-  border-radius: 50%;
-  transition: background 0.2s;
-}
-
-.close-btn:hover {
-  background-color: #f1f5f9; /* 마우스 올렸을 때 회색 배경 */
-}
-.submit-btn:hover { opacity: 0.9; transform: translateY(-2px); }
-
-.hidden { display: none!important; }
-/* ↓↓↓ 스타일 태그 맨 아래에 [추가] 하세요 ↓↓↓ */
+    /* [설정] 공통 모달 오버레이 */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(4px); z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; }
-    .modal { background: white; border-radius: 1.5rem; max-width: 550px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); }
-    .modal-header { position: sticky; top: 0; background: white; padding: 1.5rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; }
-    .modal-body { padding: 2rem; }
+    .modal { background: white; border-radius: 1.5rem; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2); }
+    .modal-header { position: sticky; top: 0; background: white; padding: 1.2rem; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; z-index: 10;}
+    .modal-body { padding: 1.5rem; }
     
-    .form-group { margin-bottom: 1.5rem; }
-    .form-label { display: block; font-size: 0.9rem; font-weight: 700; color: #334155; margin-bottom: 0.5rem; }
-    .form-textarea { width: 100%; padding: 0.75rem 1rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; transition: 0.2s; font-family: inherit; resize: none; }
-    .form-textarea:focus { border-color: #3b82f6; }
-
-    .upload-area { border: 2px dashed #e2e8f0; border-radius: 1rem; padding: 2.5rem; text-align: center; cursor: pointer; transition: 0.2s; background: #f8fafc; }
-    .upload-area:hover { border-color: #3b82f6; background: #eff6ff; }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-label { display: block; font-size: 0.85rem; font-weight: 700; color: #334155; margin-bottom: 0.4rem; }
+    .form-textarea { width: 100%; padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 0.75rem; outline: none; transition: 0.2s; font-family: inherit; resize: none; }
+    .upload-area { border: 2px dashed #e2e8f0; border-radius: 1rem; padding: 1.5rem; text-align: center; cursor: pointer; background: #f8fafc; }
     
-    .close-btn { border: none; background: none; cursor: pointer; color: #64748b; }
+    /* [설정] 상세 모달 고도화 */
+    .detail-modal {
+      max-width: 1100px; width: 95%; height: 80vh; 
+      display: flex; flex-direction: row; padding: 0; overflow: hidden;
+    }
 
-    /* [추가] 상세 모달 및 태그 디자인 */
-/* 상세 모달 크기 대폭 확대 및 가로 배치 */
-.detail-modal {
-  max-width: 1200px; /* 가로로 넓게 */
-  width: 95%;
-  height: 70vh; /* 높이 고정 */
-  display: flex; /* 가로 배치 */
-  flex-direction: row;
-  padding: 0; /* 내부 여백 제거 */
-  overflow: hidden;
-}
+    .detail-left {
+      flex: 1.2; background: #f8fafc; display: flex;
+      align-items: center; justify-content: center; border-right: 1px solid #f1f5f9;
+    }
+    .detail-left img { width: 100%; height: 100%; object-fit: contain; }
 
-/* 왼쪽 이미지 칸 */
-.detail-left {
-  flex: 1.2; /* 이미지를 조금 더 넓게 */
-  background: #f8fafc;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-right: 1px solid #f1f5f9;
-}
-.detail-left img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain; /* 이미지 전체가 보이도록 */
-}
+    .detail-right {
+      flex: 1; display: flex; flex-direction: column; background: white; padding: 1.5rem;
+    }
 
-/* 오른쪽 정보 및 댓글 칸 */
-.detail-right {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background: white;
-  padding: 1.5rem;
-}
+    /* 모바일 상세 모달 대응 */
+    @media (max-width: 768px) {
+      .detail-modal { flex-direction: column; height: 95vh; }
+      .detail-left { flex: 0.6; border-right: none; border-bottom: 1px solid #f1f5f9; }
+      .detail-right { flex: 1; padding: 1rem; overflow-y: auto; }
+    }
 
-/* 댓글 영역 스크롤 설정 */
-.comment-section {
-  flex: 1;
-  overflow-y: auto;
-  margin-top: 1rem;
-  border-top: 1px solid #f1f5f9;
-  padding-top: 1rem;
-}
-.comment-item {
-  margin-bottom: 0.8rem;
-  font-size: 0.9rem;
-}
-.comment-author { font-weight: bold; margin-right: 5px; }
+    .tag-chip {
+      padding: 4px 12px; border-radius: 50px; font-size: 0.8rem; font-weight: 700;
+      color: #475569; border: 1px solid rgba(0,0,0,0.05); display: inline-block;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03); margin-bottom: 4px;
+    }
 
-/* 댓글 입력창 */
-.comment-input-area {
-  display: flex;
-  gap: 8px;
-  margin-top: 1rem;
-}
-
-.tag-chip {
-  padding: 6px 16px;
-  border-radius: 50px;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #475569;
-  border: 1px solid rgba(0,0,0,0.05);
-  display: inline-block;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.03);
-}
-/* 모바일 대응: 화면이 좁아지면 세로로 쌓기 */
-@media (max-width: 768px) {
-  .detail-modal {
-    flex-direction: column;
-    height: 95vh;
-  }
-  .detail-left {
-    flex: 0.8;
-    border-right: none;
-    border-bottom: 1px solid #f1f5f9;
-  }
-}
-#linkActionBtn {
-  transition: all 0.2s ease;
-}
-
-#linkActionBtn:hover {
-  background: #f1f5f9 !important;
-  transform: scale(1.1);
-}
-  </style>
+    #linkActionBtn { transition: all 0.2s ease; }
+    #linkActionBtn:hover { background: #f1f5f9 !important; transform: scale(1.1); }
+    .hidden { display: none !important; }
+</style>
 </head>
 <body>
   <div class="modal-overlay hidden" id="postModalOverlay">
