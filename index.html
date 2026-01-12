@@ -719,11 +719,13 @@ function renderPosts() {
     const selectedCategory = categoryFilter ? categoryFilter.value : 'all';
     
     // 필터링 로직 (기존과 동일)
-    const filteredPosts = posts.filter(post => {
+   const filteredPosts = posts.filter(post => {
+        // [수정] matchesKeyword 조건에 작성자(author_nickname)를 추가합니다.
         const matchesKeyword = 
             post.title.toLowerCase().includes(searchTerm) ||
             (post.content && post.content.toLowerCase().includes(searchTerm)) ||
-            (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm)));
+            (post.tags && post.tags.some(tag => tag.toLowerCase().includes(searchTerm))) ||
+            (post.author_nickname && post.author_nickname.toLowerCase().includes(searchTerm)); // 작성자 이름 검색 추가
         
         const matchesCategory = 
             selectedCategory === 'all' || 
