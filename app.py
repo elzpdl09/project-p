@@ -87,6 +87,7 @@ def create_post():
     link = request.form.get('link')
     source = request.form.get('source')
     user_uuid = request.form.get('user_uuid')
+    author_nickname = request.form.get('author_nickname', '익명')
     tags_raw = request.form.get('tags')
     
     # 1. 이미지 파일 받기
@@ -120,6 +121,7 @@ def create_post():
             "title": title,
             "content": content,
             "image_url": image_url, # 생성된 URL 저장
+            "author_nickname": author_nickname, # 이 줄 추가
             "source": source,
             "author_uuid": user_uuid if user_uuid else None,
             "tags": tags,
