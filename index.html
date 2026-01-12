@@ -189,36 +189,43 @@
     }
 
     /* 모바일 상세 모달 대응 최적화 */
-   @media (max-width: 768px) {
-    /* 상세 설명이 포함된 폼 그룹 전체를 수직 정렬로 강제 전환 */
-    .form-group {
-        display: block !important; /* flex 대신 block을 써서 위아래로 쌓이게 함 */
-        width: 100% !important;
-        margin-bottom: 1.5rem !important;
-    }
+   
+/* PC 버전 (기본 설정): HTML 순서대로 라벨-입력창 배치 */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+}
 
-    /* 상세 설명 글자 (라벨) */
-    .form-label {
-        display: block !important;
-        width: 100% !important;
-        margin-bottom: 8px !important; /* 글자와 창 사이 간격 */
-        font-weight: 700 !important;
-        font-size: 0.95rem !important;
-        text-align: left !important;
-    }
+.form-label {
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
 
-    /* 상세 설명 입력창 (textarea) */
-    .form-textarea {
-        display: block !important;
-        width: 100% !important;
-        min-height: 180px !important; /* 높이를 충분히 확보 */
-        padding: 12px !important;
-        font-size: 1rem !important;
-        border: 1px solid #e2e8f0 !important;
-        border-radius: 0.75rem !important;
-        /* 아래로 더 늘어날 수 있게 함 */
-        resize: vertical !important; 
-    }
+/* 모바일 전용 수정 */
+@media (max-width: 768px) {
+  .form-group {
+    /* 모바일에서도 수직 정렬을 유지하되, 혹시 모를 flex 충돌 방지 */
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .form-label {
+    /* 라벨(글자)이 무조건 위로 오도록 순서 고정 */
+    order: -1 !important; 
+    margin-bottom: 0.8rem !important;
+    font-size: 1rem !important;
+  }
+
+  .form-textarea {
+    /* 입력창이 아래로 오고 길이를 확장 */
+    width: 100% !important;
+    min-height: 200px !important; /* 모바일에서 더 길게 확장 */
+    font-size: 1rem !important;
+    padding: 1rem !important;
+    border-radius: 0.75rem !important;
+  }
 }
     .fab {
         position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
