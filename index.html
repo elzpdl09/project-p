@@ -597,17 +597,29 @@ window.selectedPostFile = null;
         input.click();
     };
 async function savePost() {
-    const title = document.getElementById('postTitle').value.trim();
+    // 1. 필요한 요소들 가져오기
+    const submitBtn = document.getElementById('savePostBtn'); // 등록 버튼의 ID (HTML 확인 필요)
+    const titleInput = document.getElementById('postTitle');
     const tagRaw = document.getElementById('postTags').value.trim();
     const link = document.getElementById('postLink').value.trim();
     const content = document.getElementById('postContent').value.trim();
-    
-    // [추가] 작가/출처 입력값 가져오기
     const source = document.getElementById('postSource') ? document.getElementById('postSource').value.trim() : "";
 
-    // 제목 필수 체크
+    const title = titleInput.value.trim();
+
+    // 2. 제목 필수 체크
     if (!title) {
         return alert("제목은 필수 항목입니다.");
+    }
+
+    // [핵심 추가] 중복 클릭 방지 시작
+    // 이미 버튼이 비활성화 상태라면 함수를 즉시 종료합니다.
+    if (submitBtn && submitBtn.disabled) return; 
+
+    if (submitBtn) {
+        submitBtn.disabled = true; // 버튼 비활성화
+        submitBtn.innerText = "등록 중..."; // 사용자에게 알림
+        submitBtn.style.opacity = "0.6"; // 시각적 처리
     }
 
     // #태그 추출 로직
@@ -615,21 +627,25 @@ async function savePost() {
                         .filter(t => t.startsWith('#'))
                         .map(t => t.replace('#', ''));
 
-    // savePost 함수 내부의 FormData 부분 수정
-const formData = new FormData();
-formData.append('title', title);
-formData.append('content', content);
-formData.append('link', link);
-formData.append('source', source);
-formData.append('tags', JSON.stringify(tags)); 
+    const formData = new FormData();
+    formData.append('title', title);
+    formData.append('content', content);
+    formData.append('link', link);
+    formData.append('source', source);
+    formData.append('tags', JSON.stringify(tags)); 
 
-// [수정] 로그인 정보를 바탕으로 닉네임 전송
-if (currentUserUuid) {
-    formData.append('user_uuid', currentUserUuid);
-    formData.append('author_nickname', currentUserNickname); // 전역 변수의 닉네임 전송
-} else {
-    formData.append('author_nickname', '게스트');
-}
+    if (currentUserUuid) {
+        formData.append('user_uuid', currentUserUuid);
+        formData.append('author_nickname', currentUserNickname);
+    } else {
+        formData.append('author_nickname', '게스트');
+    }
+
+    // 파일이 선택되었다면 추가 (전역 변수 활용)
+    if (window.selectedPostFile) {
+        formData.append('image', window.selectedPostFile);
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}/api/posts`, {
             method: 'POST',
@@ -643,7 +659,7 @@ if (currentUserUuid) {
             closePostModal(); 
             
             // 입력 필드 초기화
-            document.getElementById('postTitle').value = '';
+            titleInput.value = '';
             document.getElementById('postTags').value = '';
             document.getElementById('postLink').value = '';
             document.getElementById('postContent').value = '';
@@ -656,10 +672,17 @@ if (currentUserUuid) {
             alert("등록 실패: " + result.message);
         }
     } catch (error) {
+        console.error("Error:", error);
         alert("서버 연결 오류가 발생했습니다.");
+    } finally {
+        // [핵심 추가] 성공하든 실패하든 처리가 끝나면 버튼을 다시 활성화
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "등록하기"; // 원래 버튼 텍스트로 복구
+            submitBtn.style.opacity = "1";
+        }
     }
 }
-
 
 // 1. 태그 색상 설정 (전역 변수)
 const pastelColors = ['#f0fdf4', '#fef2f2', '#fff7ed', '#f0f9ff', '#f5f3ff', '#faf5ff'];

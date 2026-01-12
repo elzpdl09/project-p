@@ -82,6 +82,7 @@ def login():
     
 @app.route('/api/posts', methods=['POST'])
 def create_post():
+    # 입력값 가져오기
     title = request.form.get('title')
     content = request.form.get('content')
     link = request.form.get('link')
@@ -97,44 +98,61 @@ def create_post():
         tags = json.loads(tags_raw) if tags_raw else []
         image_url = ""
 
-        # 2. 이미지가 있을 경우 "archive-media" 버킷에 업로드
-        if image_file:
-            # 파일명 중복 방지 (예: 550e8400.png)
-            file_ext = image_file.filename.split('.')[-1]
-            file_name = f"{uuid.uuid4()}.{file_ext}"
+        # 이미지가 있고 파일명이 존재할 때만 실행
+        if image_file and image_file.filename != '':
+            import os
+            # 확장자 추출 및 파일명 생성
+            file_ext = os.path.splitext(image_file.filename)[1].lower()
+            file_name = f"{uuid.uuid4()}{file_ext}"
             
-            # 바이너리 데이터 읽기
+            # [중요] 파일 데이터 읽기 전 포인터 초기화
+            image_file.seek(0)
             file_data = image_file.read()
             
-            # Supabase Storage에 업로드 (버킷명: archive-media)
-            supabase.storage.from_("archive-media").upload(
+            # [중요] 파일 타입 설정 (브라우저 출력용)
+            content_type = image_file.content_type or "image/jpeg"
+            
+            # 2. Supabase Storage 업로드 (버킷명: archive-media 확인)
+            upload_res = supabase.storage.from_("archive-media").upload(
                 path=file_name,
                 file=file_data,
-                file_options={"content-type": image_file.content_type}
+                file_options={"content-type": content_type, "x-upsert": "true"}
             )
             
-            # 공개 URL 생성
-            image_url = supabase.storage.from_("archive-media").get_public_url(file_name)
+            # 3. 공개 URL 생성 및 정확한 문자열 추출
+            # .get_public_url()은 주소 문자열만 주거나, 객체를 줄 수 있음
+            url_res = supabase.storage.from_("archive-media").get_public_url(file_name)
+            
+            # 라이브러리 버전에 따라 결과 처리 (문자열 혹은 객체)
+            if isinstance(url_res, str):
+                image_url = url_res
+            elif hasattr(url_res, 'public_url'):
+                image_url = url_res.public_url
+            else:
+                # url_res가 dict 형태일 경우 대비
+                image_url = url_res.get('publicURL', str(url_res))
 
-        # 3. DB 저장 (SQL 설계 컬럼명에 맞춤)
+        # 4. DB 저장 (image_url 변수가 확실히 채워졌는지 확인)
         insert_data = {
             "title": title,
             "content": content,
-            "image_url": image_url, # 생성된 URL 저장
-            "author_nickname": author_nickname, # 이 줄 추가
+            "image_url": image_url, 
+            "author_nickname": author_nickname,
             "source": source,
-            "author_uuid": user_uuid if user_uuid else None,
+            "author_uuid": user_uuid if (user_uuid and user_uuid != "null") else None,
             "tags": tags,
             "media_type": "image"
         }
         
+        # 실제 DB Insert 실행
         supabase.table("posts").insert(insert_data).execute()
+        
         return jsonify({"status": "success", "message": "등록 완료"}), 201
         
     except Exception as e:
-        print(f"Error: {e}")
+        # 터미널(로그)에 에러 원인 출력
+        print(f"❌ 게시글 등록 에러 발생: {str(e)}")
         return jsonify({"status": "error", "message": str(e)}), 500
-
 # 게시물 목록 불러오기 (메인 화면용)
 @app.route('/api/posts', methods=['GET'])
 def get_posts():
