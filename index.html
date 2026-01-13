@@ -968,17 +968,23 @@ window.openDetail = async (id) => {
 
 // 댓글 가져오기 함수
 async function fetchComments(postId) {
-    const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`); // 백엔드에 해당 엔드포인트 필요
+    const res = await fetch(`${API_BASE_URL}/api/posts/${postId}/comments`);
     const comments = await res.json();
     const list = document.getElementById('commentList');
+    
     list.innerHTML = comments.map(c => `
-        <div class="comment-item">
-            <span class="comment-author">${c.author_nickname}</span>
-            <span class="comment-text">${c.content}</span>
+        <div class="comment-item" style="margin-bottom: 0.8rem; line-height: 1.4;">
+            <div style="display: flex; gap: 8px; align-items: flex-start;">
+                <span class="comment-author" style="font-weight: 800; color: #1e293b; white-space: nowrap;">
+                    ${c.author_nickname}
+                </span>
+                <span class="comment-text" style="color: #475569; word-break: break-all;">
+                    ${c.content}
+                </span>
+            </div>
         </div>
     `).join('');
 }
-
 // 댓글 등록 함수
 async function addComment() {
     const input = document.getElementById('commentInput');
