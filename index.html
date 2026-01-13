@@ -218,24 +218,58 @@
 
 /* [모바일 전용 - 768px 이하] 입력창 확장 및 라벨 위치 고정 */
 @media (max-width: 768px) {
-    .form-group {
-        display: flex !important;
-        flex-direction: column !important; /* 수직 정렬 강제 */
+    /* 1. 모달 전체 레이아웃을 세로로 변경 */
+    .detail-modal {
+        flex-direction: column !important;
+        height: 95vh !important; /* 화면 높이의 95%까지 사용 */
+        max-height: none !important;
+        width: 100% !important;
+        border-radius: 1rem 1rem 0 0 !important; /* 하단은 각지게, 상단만 둥글게 */
+        align-self: flex-end; /* 화면 하단에 붙임 (모바일 앱 스타일) */
     }
 
-    .form-label {
-        order: -1 !important; /* 라벨(글자)을 무조건 입력창 위로 보냄 */
-        margin-bottom: 0.6rem !important;
-        font-size: 0.95rem !important;
+    /* 2. 이미지 영역: 위쪽에 배치하고 크기 키우기 */
+    .detail-left {
+        flex: none !important;
+        width: 100% !important;
+        height: 50vh !important; /* 이미지 높이를 화면의 절반 수준으로 확보 */
+        border-right: none !important;
+        border-bottom: 1px solid #f1f5f9;
+        background: #000; /* 이미지 몰입도를 위해 배경을 검은색으로 변경 가능 */
     }
 
-    .form-textarea {
-        order: 1 !important; /* 입력창을 라벨 아래로 배치 */
-        height: auto !important; /* 고정 높이 해제 */
-        min-height: 250px !important; /* 모바일에서 길게 확장하여 확인 및 입력 편의 제공 */
-        font-size: 1rem !important;
-        padding: 1rem !important;
-        resize: vertical !important; /* 모바일에서 필요시 더 늘릴 수 있게 허용 */
+    .detail-left img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: contain !important; /* 이미지가 잘리지 않게 전체 보여줌 */
+    }
+
+    /* 3. 내용 영역: 아래쪽에 배치하고 스크롤 가능하게 */
+    .detail-right {
+        flex: 1 !important;
+        padding: 1.2rem !important;
+        overflow-y: auto !important; /* 내용이 길면 여기서 스크롤 */
+    }
+
+    /* 4. 상단 헤더(제목, 하트, X버튼 등) 배치 최적화 */
+    .detail-header {
+        flex-wrap: wrap !important; /* 버튼이 많으면 다음 줄로 넘김 */
+        gap: 10px !important;
+    }
+
+    #detailTitle {
+        font-size: 1.3rem !important;
+        width: 100% !important; /* 제목을 한 줄 통째로 차지하게 하여 버튼들과 겹침 방지 */
+        margin-bottom: 0.5rem !important;
+    }
+
+    /* 5. 댓글 입력창 고정 (입력하기 편하게) */
+    .detail-right > div:last-child {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding-top: 1rem;
+        padding-bottom: 0.5rem;
     }
 }
     .fab {
